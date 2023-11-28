@@ -45,13 +45,13 @@ async def run_speed_test():
     try:
         logger.info("Inizio speed test...")
         st = speedtest.Speedtest(secure=1)
+        speedtest.Speedtest()
         st.get_best_server()
         download_speed = st.download() / 1_000_000  # Converti in Mbps
-        upload_speed = st.upload() / 1_000_000  # Converti in Mbps
-        return download_speed, upload_speed
+        return download_speed
     except Exception as e:
         logger.error(f"Errore durante lo speed test: {e}")
-        return None, None
+        return None
 
 async def send_telegram_notification(message):
     try:
@@ -61,14 +61,14 @@ async def send_telegram_notification(message):
 
 async def main():
     retry = 0
-    download_speed, upload_speed = await run_speed_test()
+    download_speed = await run_speed_test()
     # retry in while loop max 3 times speed test if download speed is None
     while download_speed is None and retry < 3:
         retry += 1
         logger.warning(f"Errore durante lo speed test. Ritento {retry}...")
         await asyncio.sleep(5)
-        download_speed, upload_speed = await run_speed_test()
-    if download_speed is None or upload_speed is None:
+        download_speed = await run_speed_test()
+    if download_speed is None:
         logger.error("Errore durante lo speed test. Controlla la connessione.")
         await send_telegram_notification("Errore durante lo speed test. Controlla la connessione.")
     elif download_speed <= 100:
