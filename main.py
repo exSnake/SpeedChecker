@@ -44,7 +44,7 @@ logger.addHandler(handler_error)
 async def run_speed_test():
     try:
         logger.info("Inizio speed test...")
-        st = speedtest.Speedtest()
+        st = speedtest.Speedtest(secure=1)
         st.get_best_server()
         download_speed = st.download() / 1_000_000  # Converti in Mbps
         upload_speed = st.upload() / 1_000_000  # Converti in Mbps
