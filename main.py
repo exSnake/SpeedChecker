@@ -68,13 +68,14 @@ async def main():
         logger.warning(f"Errore durante lo speed test. Ritento {retry}...")
         await asyncio.sleep(5)
         download_speed, upload_speed = await run_speed_test()
-
     if download_speed is None or upload_speed is None:
         logger.error("Errore durante lo speed test. Controlla la connessione.")
         await send_telegram_notification("Errore durante lo speed test. Controlla la connessione.")
     elif download_speed <= 100:
         logger.info(f"La velocità di download è inferiore o uguale a 100 Mbps: {download_speed:.2f} Mbps, controllare il cavo di rete sullo switch.")
         await send_telegram_notification(f"La velocità di download è inferiore o uguale a 100 Mbps: {download_speed:.2f} Mbps")
+    else:
+        logger.info(f"Velocità di download: {download_speed:.2f} Mbps")
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
