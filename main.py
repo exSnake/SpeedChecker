@@ -60,8 +60,15 @@ async def send_telegram_notification(message):
         logger.error(f"Errore nell'invio della notifica Telegram: {e}")
 
 async def main():
+    retry = 0
     download_speed, upload_speed = await run_speed_test()
-    logger.info(f"Velocità di download: {download_speed:.2f} Mbps")
+    # retry in while loop max 3 times speed test if download speed is None
+    while download_speed is None and retry < 3:
+        retry += 1
+        logger.warning(f"Errore durante lo speed test. Ritento {retry}...")
+        await asyncio.sleep(5)
+        download_speed, upload_speed = await run_speed_test()
+
     if download_speed is None or upload_speed is None:
         logger.error("Errore durante lo speed test. Controlla la connessione.")
         await send_telegram_notification("Errore durante lo speed test. Controlla la connessione.")
