@@ -2,6 +2,7 @@ import asyncio
 import speedtest
 import logging
 import logging.handlers
+import random
 from telegram import Bot
 from dotenv import load_dotenv
 import os
@@ -41,6 +42,8 @@ handler_error.setFormatter(formatter_error)
 handler_error.setLevel(logging.ERROR)
 logger.addHandler(handler_error)
 
+logger.propagate = False
+
 async def run_speed_test():
     try:
         logger.info("Inizio speed test...")
@@ -66,7 +69,7 @@ async def main():
     while download_speed is None and retry < 3:
         retry += 1
         logger.warning(f"Errore durante lo speed test. Ritento {retry}...")
-        await asyncio.sleep(5)
+        await asyncio.sleep(random.randint(65, 125)
         download_speed = await run_speed_test()
     if download_speed is None:
         logger.error("Errore durante lo speed test. Controlla la connessione.")
