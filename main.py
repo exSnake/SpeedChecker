@@ -69,7 +69,7 @@ async def main():
     while download_speed is None and retry < 3:
         retry += 1
         logger.warning(f"Errore durante lo speed test. Ritento {retry}...")
-        await asyncio.sleep(random.randint(65, 125)
+        await asyncio.sleep(random.randint(65, 125))
         download_speed = await run_speed_test()
     if download_speed is None:
         logger.error("Errore durante lo speed test. Controlla la connessione.")
